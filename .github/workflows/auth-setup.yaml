@@ -1,0 +1,25 @@
+on:
+  pull_request:
+    branches:
+      - main
+
+# Need ID token write permission to use OIDC
+permissions:
+  id-token: write
+jobs:
+  run_job_with_aws:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@main # Or a specific version
+        with:
+          role-to-assume: arn:aws:iam::953909302469:role/GhaAssumeRoleWithAction
+          aws-region: us-east-1
+      - name: Additional steps
+        run: |
+          # Your commands that require AWS credentials
+          aws sts get-caller-identity 
+        # Test auth 
+      - name: S3 list
+        run: |
+          aws s3 ls
