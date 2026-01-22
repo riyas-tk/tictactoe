@@ -1,9 +1,12 @@
+name: backend-bootstrap
+
 on:
   push:
     branches:
       - main
 
 # Need ID token write permission to use OIDC
+
 permissions:
   id-token: write
 jobs:
@@ -19,7 +22,23 @@ jobs:
         run: |
           # Your commands that require AWS credentials
           aws sts get-caller-identity 
-        # Test auth 
-      - name: S3 list
-        run: |
-          aws s3 ls
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          # Optional: specify a particular Terraform version
+          terraform_version: 1.14.3
+
+      - name: terraform plan
+        run: | 
+          cd terraform/tictactoe
+          terraform plan
+
+      - name: terraform plan
+        run: | 
+          cd terraform/tictactoe
+          terraform apply --auto-approve
+
