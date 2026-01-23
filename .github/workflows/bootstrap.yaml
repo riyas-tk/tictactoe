@@ -4,6 +4,8 @@ permissions:
   id-token: write
 
 on:
+  workflow_dispatch:
+  
   push:
     branches:
       - main
@@ -11,7 +13,6 @@ on:
       - .github/workflows/bootstrap.yaml
       - ./terraform/tictactoe-dev/bootstrap/**
       - ./terraform/modules/bootstrap/**
-
 
 # Need ID token write permission to use OIDC
 env:
@@ -60,4 +61,3 @@ jobs:
         run: | 
           cd "${{ env.TF_CONFIG_PATH }}"
           terraform apply --auto-approve
-
