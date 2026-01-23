@@ -4,9 +4,15 @@ on:
   push:
     branches:
       - main
+    paths:
+     - .github/workflows/bootstrap.yaml
+     - ./terraform/tictactoe-dev/bootstrap/**
+     - ./terraform/modules/bootstrap/**
+
 
 # Need ID token write permission to use OIDC
-
+env:
+  TF_CONFIG_PATH: terraform/tictactoe-dev/bootstrap
 permissions:
   id-token: write
 jobs:
@@ -32,13 +38,23 @@ jobs:
           # Optional: specify a particular Terraform version
           terraform_version: 1.14.3
 
-      - name: terraform plan
+      - name: terraform validate
         run: | 
-          cd terraform/tictactoe
-          terraform plan
+          cd "${{ env.TF_CONFIG_PATH }}"
+          terraform validate
+
+      - name: terraform init
+        run: | 
+          cd "${{ env.TF_CONFIG_PATH }}"
+          terraform init
 
       - name: terraform plan
         run: | 
-          cd terraform/tictactoe
+          cd "${{ env.TF_CONFIG_PATH }}"
+          terraform plan --auto-approve
+
+      - name: terraform apply
+        run: | 
+          cd "${{ env.TF_CONFIG_PATH }}"
           terraform apply --auto-approve
 
