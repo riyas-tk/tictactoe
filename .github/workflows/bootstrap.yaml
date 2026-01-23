@@ -41,15 +41,15 @@ jobs:
           # Optional: specify a particular Terraform version
           terraform_version: 1.14.3
 
-      - name: terraform validate
-        run: | 
-          cd "${{ env.TF_CONFIG_PATH }}"
-          terraform validate
-
       - name: terraform init
         run: | 
           cd "${{ env.TF_CONFIG_PATH }}"
           terraform init
+
+      - name: terraform validate
+        run: | 
+          cd "${{ env.TF_CONFIG_PATH }}"
+          terraform validate
 
       - name: terraform plan
         run: | 
