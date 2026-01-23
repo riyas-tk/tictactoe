@@ -1,5 +1,10 @@
 data "aws_caller_identity" "current" {}
 
+resource "aws_kms_alias" "s3_encryption_key_alias" {
+  name          = "alias/dev-backend-s3-encryption-key"
+  target_key_id = aws_kms_key.s3_encryption_key.key_id
+}
+
 resource "aws_kms_key" "s3_encryption_key" {
   description             = "S3 bucket encryption master key"
   enable_key_rotation     = true

@@ -20,3 +20,9 @@ variable "tags" {
     Environment = "dev"
   }
 }
+
+variable "github_repo" {
+  description = "The GitHub repository in 'owner/repo' format"
+  type        = string
+  default     = "riyas-tk/tictactoe"
+}
