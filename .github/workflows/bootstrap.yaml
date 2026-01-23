@@ -1,20 +1,22 @@
 name: backend-bootstrap
 
+permissions:
+  id-token: write
+
 on:
   push:
     branches:
       - main
     paths:
-     - .github/workflows/bootstrap.yaml
-     - ./terraform/tictactoe-dev/bootstrap/**
-     - ./terraform/modules/bootstrap/**
+      - .github/workflows/bootstrap.yaml
+      - ./terraform/tictactoe-dev/bootstrap/**
+      - ./terraform/modules/bootstrap/**
 
 
 # Need ID token write permission to use OIDC
 env:
   TF_CONFIG_PATH: terraform/tictactoe-dev/bootstrap
-permissions:
-  id-token: write
+
 jobs:
   run_job_with_aws:
     runs-on: ubuntu-latest
@@ -24,6 +26,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::953909302469:role/GhaAssumeRoleWithAction
           aws-region: us-east-1
+
       - name: Additional steps
         run: |
           # Your commands that require AWS credentials
@@ -51,7 +54,7 @@ jobs:
       - name: terraform plan
         run: | 
           cd "${{ env.TF_CONFIG_PATH }}"
-          terraform plan --auto-approve
+          terraform plan
 
       - name: terraform apply
         run: | 
