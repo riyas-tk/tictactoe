@@ -1,5 +1,6 @@
-name: backend-bootstrap
+name: Deploy ec2 spot instance request
 
+# Need ID token write permission to use OIDC
 permissions:
   id-token: write
 
@@ -11,12 +12,11 @@ on:
         required: false
         type: number
 
-# Need ID token write permission to use OIDC
 env:
   TF_CONFIG_PATH: terraform/tictactoe/k8s-ec2
 
 jobs:
-  run_job_with_aws:
+  run_ec2_instance:
     runs-on: ubuntu-latest
     steps:
       - name: Configure AWS Credentials
@@ -28,7 +28,7 @@ jobs:
       - name: Additional steps
         run: |
           # Your commands that require AWS credentials
-          aws sts get-caller-identity 
+          aws sts get-caller-identity
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,16 +40,17 @@ jobs:
           terraform_version: 1.14.3
 
       - name: terraform init
-        run: | 
+        run: |
           cd "${{ env.TF_CONFIG_PATH }}"
           terraform init
 
       - name: terraform validate
-        run: | 
+        run: |
           cd "${{ env.TF_CONFIG_PATH }}"
           terraform validate
 
       - name: terraform apply
-        run: | 
+        run: |
           cd "${{ env.TF_CONFIG_PATH }}"
-          terraform apply -var="valid_until_hrs=${{inputs.valid_until_hrs}}" --auto-approve
+          terraform apply \
+          -var="valid_until_hrs=${{inputs.valid_until_hrs}}" --auto-approve
