@@ -13,9 +13,16 @@ variable "instance_type" {
 }
 
 variable "spot_type" {
-    description = "spot type; persistent/one-time"
-    type = string
-    default = "one-time"
+  type = string
+  default = "one-time"
+}
+
+variable "persistent_spot_settings" {
+  description = "persistent spot type instance settings"
+  type = map(any)
+  default = {
+    enabled = false
+  }
 }
 
 variable "ami_id" {

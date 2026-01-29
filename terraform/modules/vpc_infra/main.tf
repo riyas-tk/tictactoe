@@ -61,16 +61,39 @@ resource "aws_network_acl_rule" "allow_ssh_inbound" {
   to_port        = 22
 }
 
-# Allow Outbound Ephemeral Ports (Required for SSH response)
-resource "aws_network_acl_rule" "allow_ephemeral_outbound" {
+# Open Inbound SSH ephemeral port range
+resource "aws_network_acl_rule" "allow_ephemeral_inbound" {
+  network_acl_id = aws_network_acl.ec2_subnet_nacl.id
+  rule_number    = 200
+  egress         = false
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = "0.0.0.0/0" # Consider restricting to your IP
+  from_port      = 1024
+  to_port        = 65535
+}
+
+# Allow all outbound traffic
+resource "aws_network_acl_rule" "allow_ipv4_outbound" {
   network_acl_id = aws_network_acl.ec2_subnet_nacl.id
   rule_number    = 100
   egress         = true
   protocol       = "tcp"
   rule_action    = "allow"
   cidr_block     = "0.0.0.0/0"
-  from_port      = 1024
-  to_port        = 65535
+  from_port      = 0
+  to_port        = 0
+}
+
+resource "aws_network_acl_rule" "allow_ipv6_outbound" {
+  network_acl_id = aws_network_acl.ec2_subnet_nacl.id
+  rule_number    = 200
+  egress         = true
+  protocol       = "-1"
+  rule_action    = "allow"
+  ipv6_cidr_block = "::/0"
+  from_port      = 0
+  to_port        = 0
 }
 
 # Create the Security Group

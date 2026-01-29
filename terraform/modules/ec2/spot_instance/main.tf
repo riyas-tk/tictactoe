@@ -15,14 +15,14 @@ resource "aws_instance" "spot_ec2" {
   subnet_id              = var.subnet_id
   vpc_security_group_ids = var.sg_id
   key_name               = aws_key_pair.ssh_key.key_name
-
   instance_market_options {
     market_type = "spot"
     spot_options {
-      # spot_instance_type = var.spot_type
-      valid_until = local.timestamp_with_offset
+      spot_instance_type = var.spot_type
+      instance_interruption_behavior = var.persistent_spot_settings.enabled ? "stop" : "terminate"
     }
   }
+
   ebs_block_device {
     device_name = "/dev/sdc"
     volume_size = 30
