@@ -1,5 +1,6 @@
 locals {
-  timestamp_with_offset = timeadd(timestamp(), var.valid_until_hrs)
+  offset = var.valid_until_hrs != "" ? var.valid_until_hrs : "2h"
+  timestamp_with_offset = timeadd(timestamp(), local.offset)
 }
 
 resource "aws_key_pair" "ssh_key" {
