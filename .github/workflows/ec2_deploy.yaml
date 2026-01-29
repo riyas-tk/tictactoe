@@ -1,0 +1,55 @@
+name: backend-bootstrap
+
+permissions:
+  id-token: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      valid_until_hrs:
+        description: 'spot request valid till hours'
+        required: false
+        type: number
+
+# Need ID token write permission to use OIDC
+env:
+  TF_CONFIG_PATH: terraform/tictactoe/k8s-ec2
+
+jobs:
+  run_job_with_aws:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@main # Or a specific version
+        with:
+          role-to-assume: arn:aws:iam::953909302469:role/GhaAssumeRoleWithAction
+          aws-region: us-east-1
+
+      - name: Additional steps
+        run: |
+          # Your commands that require AWS credentials
+          aws sts get-caller-identity 
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          # Optional: specify a particular Terraform version
+          terraform_version: 1.14.3
+
+      - name: terraform init
+        run: | 
+          cd "${{ env.TF_CONFIG_PATH }}"
+          terraform init
+
+      - name: terraform validate
+        run: | 
+          cd "${{ env.TF_CONFIG_PATH }}"
+          terraform validate
+
+      - name: terraform apply
+        run: | 
+          cd "${{ env.TF_CONFIG_PATH }}"
+          terraform apply -var="valid_until_hrs=${{inputs.valid_until_hrs}}" --auto-approve
