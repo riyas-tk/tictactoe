@@ -78,7 +78,7 @@ resource "aws_network_acl_rule" "allow_ipv4_outbound" {
   network_acl_id = aws_network_acl.ec2_subnet_nacl.id
   rule_number    = 100
   egress         = true
-  protocol       = "tcp"
+  protocol       = "-1"
   rule_action    = "allow"
   cidr_block     = "0.0.0.0/0"
   from_port      = 0
