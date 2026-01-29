@@ -13,7 +13,7 @@ on:
         type: number
 
 env:
-  TF_CONFIG_PATH: terraform/tictactoe/k8s-ec2
+  TF_CONFIG_PATH: terraform/tictactoe-dev/k8s-ec2
 
 jobs:
   run_ec2_instance:

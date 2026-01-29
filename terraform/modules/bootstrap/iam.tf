@@ -85,6 +85,12 @@ data "aws_iam_policy_document" "deployment_policy_doc" {
     ]
     resources = ["*"]
   }
+  statement {
+    actions = [
+      "ec2:*"
+    ]
+    resources = ["*"]
+  }
 }
 
 # Create the IAM Policy Resource
