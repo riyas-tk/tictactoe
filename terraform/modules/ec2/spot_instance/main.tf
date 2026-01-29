@@ -1,5 +1,5 @@
 locals {
-  offset = var.valid_until_hrs != "" ? var.valid_until_hrs : "2h"
+  offset                = var.valid_until_hrs != "" ? var.valid_until_hrs : "2h"
   timestamp_with_offset = timeadd(timestamp(), local.offset)
 }
 
@@ -19,8 +19,8 @@ resource "aws_instance" "spot_ec2" {
   instance_market_options {
     market_type = "spot"
     spot_options {
-      spot_instance_type = var.spot_type
-      valid_until        = local.timestamp_with_offset
+      # spot_instance_type = var.spot_type
+      valid_until = local.timestamp_with_offset
     }
   }
   ebs_block_device {
