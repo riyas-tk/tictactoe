@@ -18,7 +18,7 @@ resource "aws_instance" "spot_ec2" {
   instance_market_options {
     market_type = "spot"
     spot_options {
-      spot_instance_type = var.spot_type
+      spot_instance_type             = var.spot_type
       instance_interruption_behavior = var.persistent_spot_settings.enabled ? "stop" : "terminate"
     }
   }

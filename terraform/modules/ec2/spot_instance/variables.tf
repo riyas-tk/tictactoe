@@ -1,33 +1,33 @@
 variable "region" {
-  type = string
-  default = "us-east-1"  
+  type    = string
+  default = "us-east-1"
 }
 
 variable "availability_zone" {
-  type = string
+  type    = string
   default = "us-east-1a"
 }
 
 variable "instance_type" {
-    type = string
+  type = string
 }
 
 variable "spot_type" {
-  type = string
+  type    = string
   default = "one-time"
 }
 
 variable "persistent_spot_settings" {
   description = "persistent spot type instance settings"
-  type = map(any)
+  type        = map(any)
   default = {
     enabled = false
   }
 }
 
 variable "ami_id" {
-    type = string
-    default = "ami-024ee5112d03921e2"
+  type    = string
+  default = "ami-024ee5112d03921e2"
 }
 
 variable "subnet_id" {
@@ -40,11 +40,11 @@ variable "ec2_ig" {
 
 variable "sg_id" {
   description = "Security group ID"
-  type = list(string)
+  type        = list(string)
 }
 
 variable "valid_until_hrs" {
-  type = string
+  type    = string
   default = "2h" # Use 2 hr validity for spot request 
 }
 

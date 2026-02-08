@@ -6,11 +6,16 @@ resource "aws_vpc" "ec2_vpc" {
   tags = var.tags
 }
 
+resource "random_shuffle" "random_zone_selector" {
+  input = var.azs
+}
+
 # Create Subnet
 resource "aws_subnet" "ec2_subnet" {
+  count             = length(var.subnet_cidr_blocks)
   vpc_id            = aws_vpc.ec2_vpc.id
-  cidr_block        = var.subnet_cidr_block
-  availability_zone = "us-east-1a" # Change as needed
+  cidr_block        = var.subnet_cidr_blocks[count.index]
+  availability_zone = random_shuffle.random_zone_selector.result[count.index] # randomn zone from list
 
   tags = var.tags
 }
@@ -36,14 +41,14 @@ resource "aws_route_table" "public_rt" {
 }
 
 resource "aws_route_table_association" "rt_association" {
-  subnet_id      = aws_subnet.ec2_subnet.id
+  subnet_id      = aws_subnet.ec2_subnet[0].id
   route_table_id = aws_route_table.public_rt.id
 }
 
 # Network ACL (NACL)
 resource "aws_network_acl" "ec2_subnet_nacl" {
   vpc_id     = aws_vpc.ec2_vpc.id
-  subnet_ids = [aws_subnet.ec2_subnet.id]
+  subnet_ids = [aws_subnet.ec2_subnet[0].id]
 
   tags = var.tags
 }
@@ -86,14 +91,14 @@ resource "aws_network_acl_rule" "allow_ipv4_outbound" {
 }
 
 resource "aws_network_acl_rule" "allow_ipv6_outbound" {
-  network_acl_id = aws_network_acl.ec2_subnet_nacl.id
-  rule_number    = 200
-  egress         = true
-  protocol       = "-1"
-  rule_action    = "allow"
+  network_acl_id  = aws_network_acl.ec2_subnet_nacl.id
+  rule_number     = 200
+  egress          = true
+  protocol        = "-1"
+  rule_action     = "allow"
   ipv6_cidr_block = "::/0"
-  from_port      = 0
-  to_port        = 0
+  from_port       = 0
+  to_port         = 0
 }
 
 # Create the Security Group
